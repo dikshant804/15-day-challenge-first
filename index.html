@@ -7,47 +7,80 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0A0A0F;
-    --surface: #13131A;
-    --card: #1A1A24;
-    --border: #2A2A38;
-    --accent: #E8FF47;
-    --accent2: #FF6B35;
-    --accent3: #47B8FF;
-    --text: #F0F0F8;
-    --muted: #6B6B88;
-    --green: #4ADE80;
-    --red: #FF4A6B;
+    --bg: #0A0A0F; --surface: #13131A; --card: #1A1A24; --border: #2A2A38;
+    --accent: #E8FF47; --accent2: #FF6B35; --accent3: #47B8FF;
+    --text: #F0F0F8; --muted: #6B6B88; --green: #4ADE80; --red: #FF4A6B;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
-
   body::before {
-    content: '';
-    position: fixed; inset: 0;
+    content: ''; position: fixed; inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
     pointer-events: none; z-index: 100; opacity: 0.4;
   }
-
   .container { max-width: 860px; margin: 0 auto; padding: 32px 16px; }
 
-  /* HEADER */
-  .header { margin-bottom: 36px; }
+  #loginScreen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px; text-align: center; padding: 20px;
+  }
+  .login-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 12vw, 96px); line-height: 0.9; }
+  .login-title span { color: var(--accent); }
+  .login-sub { color: var(--muted); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; }
+  .google-btn {
+    display: flex; align-items: center; gap: 12px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 24px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text);
+    transition: all 0.2s; margin-top: 8px;
+  }
+  .google-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  #loadingScreen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+  }
+  .spinner {
+    width: 40px; height: 40px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #appScreen { display: none; }
+
+  .user-bar {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+  }
+  .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); }
+  .user-name { font-size: 13px; color: var(--muted); flex: 1; }
+  .user-name span { color: var(--text); font-weight: 500; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
+  .sync-label { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .signout-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px;
+    font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .signout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .header { margin-bottom: 28px; }
   .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
   .title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 10vw, 88px); line-height: 0.9; letter-spacing: 2px; }
   .title span { color: var(--accent); }
   .subtitle { color: var(--muted); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; }
   .day-badge {
-    text-align: center; min-width: 90px;
-    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent);
-    background: rgba(232,255,71,0.07); border: 1px solid rgba(232,255,71,0.2);
+    text-align: center; min-width: 90px; font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--accent); background: rgba(232,255,71,0.07); border: 1px solid rgba(232,255,71,0.2);
     padding: 10px 14px; border-radius: 6px;
   }
   .day-badge .big { font-family: 'Bebas Neue', sans-serif; font-size: 36px; display: block; line-height: 1; }
 
-  /* DATE NAV */
   .date-nav {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
     background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
   }
   .nav-btn {
@@ -66,35 +99,24 @@
   }
   .today-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* RINGS ROW */
   .rings-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
-  @media (max-width: 500px) { .rings-row { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
-
   .ring-card {
     background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
     padding: 16px 12px; position: relative; overflow: hidden; text-align: center;
   }
   .ring-card-line { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
   .ring-card-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
-  .ring-wrap { position: relative; width: 60px; height: 60px; margin: 0 auto 8px; }
+  .ring-wrap { position: relative; width: 60px; height: 60px; margin: 0 auto 4px; }
   .ring-wrap svg { transform: rotate(-90deg); }
   .ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
   .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
   .ring-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 18px; }
 
-  /* TASKS */
-  .tasks-block {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    margin-bottom: 14px; overflow: hidden;
-  }
-  .tasks-header {
-    padding: 14px 18px 10px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
-  }
+  .tasks-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+  .tasks-header { padding: 14px 18px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
   .tasks-header .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .tasks-header-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-weight: 600; flex: 1; }
   .tasks-header-time { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
-
   .task-item {
     display: flex; align-items: flex-start; gap: 14px; padding: 14px 18px;
     border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s;
@@ -103,8 +125,7 @@
   .task-item:hover { background: rgba(255,255,255,0.02); }
   .task-check {
     width: 22px; height: 22px; border-radius: 5px; border: 1.5px solid var(--border);
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; margin-top: 1px;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 1px;
   }
   .task-item.done .task-check { border-color: var(--green); background: var(--green); }
   .task-item.done .task-check::after { content: '✓'; color: #000; font-size: 12px; font-weight: 800; }
@@ -113,46 +134,32 @@
   .task-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
   .task-min { font-size: 10px; color: var(--accent2); background: rgba(255,107,53,0.1); padding: 2px 7px; border-radius: 3px; margin-top: 4px; display: inline-block; }
 
-  /* RESET BANNER */
   .reset-banner {
     background: rgba(232,255,71,0.04); border: 1px solid rgba(232,255,71,0.15);
-    border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;
-    display: flex; align-items: center; gap: 14px;
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 14px;
   }
   .reset-icon { font-size: 24px; flex-shrink: 0; }
   .reset-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
   .reset-text strong { color: var(--accent); }
 
-  /* JOURNAL */
-  .journal-block {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px 18px; margin-bottom: 14px;
-  }
+  .journal-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; }
   .journal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
   .journal-area {
     width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 6px;
     color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
-    padding: 12px; resize: none; outline: none; line-height: 1.6; min-height: 70px;
-    transition: border-color 0.2s;
+    padding: 12px; resize: none; outline: none; line-height: 1.6; min-height: 70px; transition: border-color 0.2s;
   }
   .journal-area:focus { border-color: var(--accent); }
   .journal-area::placeholder { color: var(--muted); }
 
-  /* 15 DAY GRID */
-  .grid-section {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 18px; margin-bottom: 14px;
-  }
-  .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .grid-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 14px; }
+  .grid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
   .grid-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-weight: 600; }
   .fifteen-grid { display: grid; grid-template-columns: repeat(15, 1fr); gap: 6px; }
-  @media (max-width: 500px) { .fifteen-grid { gap: 4px; } }
-
   .day-cell {
     aspect-ratio: 1; border-radius: 4px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 12px;
-    transition: transform 0.1s; position: relative;
+    font-family: 'Bebas Neue', sans-serif; font-size: 12px; transition: transform 0.1s;
   }
   .day-cell:hover { transform: scale(1.15); }
   .day-cell.future { background: var(--border); color: var(--muted); }
@@ -160,33 +167,56 @@
   .day-cell.partial { background: rgba(74,222,128,0.3); color: var(--green); }
   .day-cell.missed { background: rgba(255,74,107,0.3); color: var(--red); }
   .day-cell.today { outline: 2px solid var(--accent); outline-offset: 1px; }
-
-  /* STATS */
   .stats-row { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
-  .stat { }
   .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; }
   .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-top: 2px; }
 
-  /* SAVE */
-  .save-toast {
-    position: fixed; bottom: 20px; right: 16px; background: var(--surface);
-    border: 1px solid var(--green); color: var(--green); padding: 8px 16px;
+  .toast {
+    position: fixed; bottom: 20px; right: 16px; padding: 8px 16px;
     border-radius: 6px; font-size: 12px; opacity: 0; transition: opacity 0.3s;
     font-family: 'DM Mono', monospace; z-index: 999;
+    background: var(--surface); border: 1px solid var(--green); color: var(--green);
   }
-  .save-toast.show { opacity: 1; }
-
-  /* OUT OF RANGE */
-  .out-of-range {
-    text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px;
-  }
+  .toast.show { opacity: 1; }
+  .toast.error { border-color: var(--red); color: var(--red); }
+  .out-of-range { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
   .out-of-range .big { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--border); display: block; }
 </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- HEADER -->
+<div id="loginScreen">
+  <div>
+    <div class="login-title">15<span>-DAY</span><br>CHALLENGE</div>
+    <div class="login-sub" style="margin-top:10px">Course · Gym · Productive Work</div>
+  </div>
+  <button class="google-btn" id="googleSignInBtn">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+    Continue with Google
+  </button>
+  <div style="font-size:12px;color:var(--muted)">Your data syncs across all devices automatically</div>
+</div>
+
+<div id="loadingScreen" style="display:none">
+  <div class="spinner"></div>
+  <div style="color:var(--muted);font-size:13px">Syncing your data...</div>
+</div>
+
+<div id="appScreen">
+<div class="container">
+  <div class="user-bar">
+    <img class="user-avatar" id="userAvatar" src="" alt="">
+    <div class="user-name">Signed in as <span id="userName"></span></div>
+    <div class="sync-dot" id="syncDot"></div>
+    <div class="sync-label" id="syncLabel">Synced</div>
+    <button class="signout-btn" id="signOutBtn">Sign out</button>
+  </div>
+
   <div class="header">
     <div class="header-top">
       <div>
@@ -200,18 +230,16 @@
     </div>
   </div>
 
-  <!-- DATE NAV -->
   <div class="date-nav">
-    <button class="nav-btn" onclick="changeDay(-1)">←</button>
+    <button class="nav-btn" id="prevDay">←</button>
     <div class="date-info">
       <div class="weekday-label" id="weekdayDisplay"></div>
       <div class="date-big" id="dateDisplay"></div>
     </div>
-    <button class="today-btn" onclick="goToday()">Today</button>
-    <button class="nav-btn" onclick="changeDay(1)">→</button>
+    <button class="today-btn" id="todayBtn">Today</button>
+    <button class="nav-btn" id="nextDay">→</button>
   </div>
 
-  <!-- RINGS -->
   <div class="rings-row">
     <div class="ring-card">
       <div class="ring-card-line" style="background:var(--accent)"></div>
@@ -248,25 +276,21 @@
     </div>
   </div>
 
-  <!-- TASKS -->
-  <div id="tasks-container"></div>
+  <div id="tasksContainer"></div>
 
-  <!-- RESET BANNER -->
   <div class="reset-banner">
     <div class="reset-icon">🔴</div>
     <div class="reset-text">
       <strong>Reset Rule:</strong> Miss a day? Do <strong>1% tomorrow — not 0%.</strong>
-      Watch 5 min of the course. Do 10 min at gym. Send one good work email. Keep the streak alive.
+      Watch 5 min of course. Do 10 min at gym. Send one focused work block.
     </div>
   </div>
 
-  <!-- JOURNAL -->
   <div class="journal-block">
     <div class="journal-label">📝 Daily Note</div>
-    <textarea class="journal-area" id="dailyNote" placeholder="What did I do today? What's one thing for tomorrow?" oninput="saveNote()"></textarea>
+    <textarea class="journal-area" id="dailyNote" placeholder="What did I do today? What's one thing for tomorrow?"></textarea>
   </div>
 
-  <!-- 15-DAY GRID -->
   <div class="grid-section">
     <div class="grid-header">
       <div class="grid-label">📅 15-Day Progress</div>
@@ -282,38 +306,72 @@
       <div class="stat"><div class="stat-num" id="statStreak" style="color:var(--accent)">0</div><div class="stat-label">Streak</div></div>
     </div>
   </div>
-
+</div>
 </div>
 
-<div class="save-toast" id="saveToast">✓ Saved</div>
+<div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAWaBw6GMOfAprWTs_nwa9nL5BTWGy4Drk",
+  authDomain: "day-challenge-first-public.firebaseapp.com",
+  projectId: "day-challenge-first-public",
+  storageBucket: "day-challenge-first-public.firebasestorage.app",
+  messagingSenderId: "234899454329",
+  appId: "1:234899454329:web:d84e3423e2b00a6d4657a8"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
 const START_DATE = new Date('2026-03-08');
 START_DATE.setHours(0,0,0,0);
 const TOTAL_DAYS = 15;
-
 const TASKS = [
   { id: 'course', name: 'Complete Course', desc: 'Study your course material. Watch lessons, take notes, make progress.', min: 'Min: Watch 5 minutes', color: 'var(--accent)' },
   { id: 'gym',    name: 'Go to Gym',       desc: 'Show up every single day. Even a light session counts.', min: 'Min: 10 min + show up', color: 'var(--accent2)' },
   { id: 'work',   name: 'Work Productively', desc: 'Do one thing today better than expected. No distracted scrolling.', min: 'Min: 1 deep work block', color: 'var(--accent3)' },
 ];
 
-let currentDate = new Date();
-currentDate.setHours(0,0,0,0);
+let currentDate = new Date(); currentDate.setHours(0,0,0,0);
+let userData = {};
+let currentUser = null;
+let unsubscribeSnap = null;
+let noteTimer = null;
 
-function getKey(date) { return date.toISOString().split('T')[0]; }
-function getOffset(date) {
-  const d = new Date(date); d.setHours(0,0,0,0);
-  return Math.floor((d - START_DATE) / 86400000);
+function getKey(d) { return d.toISOString().split('T')[0]; }
+function getOffset(d) {
+  const x = new Date(d); x.setHours(0,0,0,0);
+  return Math.floor((x - START_DATE) / 86400000);
 }
-function load() { try { return JSON.parse(localStorage.getItem('challenge15') || '{}'); } catch { return {}; } }
-function save(data) { localStorage.setItem('challenge15', JSON.stringify(data)); showToast(); }
 
-function showToast() {
-  const t = document.getElementById('saveToast');
-  t.classList.add('show');
+function setSyncing(s) {
+  document.getElementById('syncDot').className = 'sync-dot' + (s ? ' syncing' : '');
+  document.getElementById('syncLabel').textContent = s ? 'Syncing...' : 'Synced';
+}
+
+function showToast(msg, err = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (err ? ' error' : '');
   clearTimeout(window._tt);
-  window._tt = setTimeout(() => t.classList.remove('show'), 1400);
+  window._tt = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+async function saveToFirebase() {
+  if (!currentUser) return;
+  setSyncing(true);
+  try {
+    await setDoc(doc(db, 'users', currentUser.uid), { data: userData });
+    setSyncing(false); showToast('✓ Synced');
+  } catch(e) { setSyncing(false); showToast('Sync failed', true); }
 }
 
 function renderHeader() {
@@ -329,65 +387,47 @@ function renderHeader() {
 function renderTasks() {
   const offset = getOffset(currentDate);
   const inRange = offset >= 0 && offset < TOTAL_DAYS;
-  const container = document.getElementById('tasks-container');
-  const data = load();
+  const container = document.getElementById('tasksContainer');
   const key = getKey(currentDate);
-  const dayData = data[key] || {};
+  const dayData = userData[key] || {};
 
   if (!inRange) {
-    container.innerHTML = `<div class="out-of-range"><span class="big">!</span>This date is outside the 15-day challenge window.</div>`;
-    updateRings(dayData);
-    return;
+    container.innerHTML = `<div class="out-of-range"><span class="big">!</span>Outside the 15-day challenge window.</div>`;
+    updateRings(dayData); return;
   }
 
   container.innerHTML = '';
   const block = document.createElement('div');
   block.className = 'tasks-block';
+  block.innerHTML = `<div class="tasks-header"><span class="dot" style="background:var(--green)"></span><span class="tasks-header-label">Today's 3 Tasks</span><span class="tasks-header-time">All 3 = Full Day ✓</span></div>`;
 
-  const header = document.createElement('div');
-  header.className = 'tasks-header';
-  header.innerHTML = `<span class="dot" style="background:var(--green)"></span><span class="tasks-header-label">Today's 3 Tasks</span><span class="tasks-header-time">All 3 = Full Day ✓</span>`;
-  block.appendChild(header);
-
-  TASKS.forEach((task, i) => {
+  TASKS.forEach(task => {
     const done = !!dayData[task.id];
     const item = document.createElement('div');
     item.className = 'task-item' + (done ? ' done' : '');
-    item.innerHTML = `
-      <div class="task-check"></div>
-      <div>
-        <div class="task-name">${task.name}</div>
-        <div class="task-desc">${task.desc}</div>
-        <div class="task-min">↓ ${task.min}</div>
-      </div>`;
-    item.onclick = () => toggleTask(task.id);
+    item.innerHTML = `<div class="task-check"></div><div><div class="task-name">${task.name}</div><div class="task-desc">${task.desc}</div><div class="task-min">↓ ${task.min}</div></div>`;
+    item.addEventListener('click', async () => {
+      const k = getKey(currentDate);
+      if (!userData[k]) userData[k] = {};
+      userData[k][task.id] = !userData[k][task.id];
+      renderAll();
+      await saveToFirebase();
+    });
     block.appendChild(item);
   });
-
   container.appendChild(block);
   updateRings(dayData);
-}
-
-function toggleTask(taskId) {
-  const data = load();
-  const key = getKey(currentDate);
-  if (!data[key]) data[key] = {};
-  data[key][taskId] = !data[key][taskId];
-  save(data);
-  renderAll();
 }
 
 function updateRings(dayData) {
   TASKS.forEach((task, i) => {
     const done = !!dayData[task.id];
-    const offset = done ? 0 : 157;
-    document.getElementById(`ring-${i}`).style.strokeDashoffset = offset;
+    document.getElementById(`ring-${i}`).style.strokeDashoffset = done ? 0 : 157;
     document.getElementById(`rnum-${i}`).textContent = done ? '✓' : '–';
   });
 }
 
 function renderGrid() {
-  const data = load();
   const grid = document.getElementById('fifteenGrid');
   grid.innerHTML = '';
   const today = new Date(); today.setHours(0,0,0,0);
@@ -396,16 +436,12 @@ function renderGrid() {
   for (let i = 0; i < TOTAL_DAYS; i++) {
     const d = new Date(START_DATE); d.setDate(d.getDate() + i);
     const key = getKey(d);
-    const isPast = d < today;
-    const isToday = d.getTime() === today.getTime();
-    const dayData = data[key] || {};
+    const isPast = d < today, isToday = d.getTime() === today.getTime();
+    const dayData = userData[key] || {};
     const doneCount = TASKS.filter(t => dayData[t.id]).length;
-
     const cell = document.createElement('div');
-    cell.className = 'day-cell';
-    cell.textContent = i + 1;
+    cell.className = 'day-cell'; cell.textContent = i + 1;
     cell.title = `Day ${i+1} — ${d.toDateString()}`;
-
     if (isToday) {
       cell.classList.add('today');
       if (doneCount === 3) { cell.classList.add('done'); full++; }
@@ -415,21 +451,15 @@ function renderGrid() {
       if (doneCount === 3) { cell.classList.add('done'); full++; }
       else if (doneCount > 0) { cell.classList.add('partial'); partial++; }
       else { cell.classList.add('missed'); missed++; }
-    } else {
-      cell.classList.add('future');
-    }
-
-    cell.onclick = () => { currentDate = new Date(d); renderAll(); };
+    } else cell.classList.add('future');
+    cell.addEventListener('click', () => { currentDate = new Date(d); renderAll(); });
     grid.appendChild(cell);
   }
 
-  // Streak (consecutive full days up to today)
   const todayOffset = getOffset(today);
-  for (let i = Math.min(todayOffset, TOTAL_DAYS - 1); i >= 0; i--) {
+  for (let i = Math.min(todayOffset, TOTAL_DAYS-1); i >= 0; i--) {
     const d = new Date(START_DATE); d.setDate(d.getDate() + i);
-    const key = getKey(d);
-    const dayData = data[key] || {};
-    const doneCount = TASKS.filter(t => dayData[t.id]).length;
+    const doneCount = TASKS.filter(t => (userData[getKey(d)] || {})[t.id]).length;
     if (doneCount === 3 && !streakBroken) streak++;
     else if (d <= today) streakBroken = true;
   }
@@ -440,39 +470,63 @@ function renderGrid() {
   document.getElementById('statStreak').textContent = streak;
 }
 
-function saveNote() {
-  const data = load();
+function renderNote() {
   const key = getKey(currentDate);
-  if (!data[key]) data[key] = {};
-  data[key].note = document.getElementById('dailyNote').value;
-  save(data);
+  document.getElementById('dailyNote').value = (userData[key] && userData[key].note) || '';
 }
 
-function loadNote() {
-  const data = load();
-  const key = getKey(currentDate);
-  document.getElementById('dailyNote').value = (data[key] && data[key].note) || '';
-}
+function renderAll() { renderHeader(); renderTasks(); renderGrid(); renderNote(); }
 
-function changeDay(delta) {
-  currentDate = new Date(currentDate);
-  currentDate.setDate(currentDate.getDate() + delta);
-  renderAll();
-}
+// Buttons
+document.getElementById('prevDay').addEventListener('click', () => { currentDate.setDate(currentDate.getDate()-1); renderAll(); });
+document.getElementById('nextDay').addEventListener('click', () => { currentDate.setDate(currentDate.getDate()+1); renderAll(); });
+document.getElementById('todayBtn').addEventListener('click', () => { currentDate = new Date(); currentDate.setHours(0,0,0,0); renderAll(); });
+document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch(e) { showToast('Sign-in failed', true); }
+});
+document.getElementById('signOutBtn').addEventListener('click', async () => {
+  if (unsubscribeSnap) unsubscribeSnap();
+  await fbSignOut(auth);
+  userData = {};
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+});
+document.getElementById('dailyNote').addEventListener('input', () => {
+  clearTimeout(noteTimer);
+  noteTimer = setTimeout(async () => {
+    const key = getKey(currentDate);
+    if (!userData[key]) userData[key] = {};
+    userData[key].note = document.getElementById('dailyNote').value;
+    await saveToFirebase();
+  }, 800);
+});
 
-function goToday() {
-  currentDate = new Date(); currentDate.setHours(0,0,0,0);
-  renderAll();
-}
+// Auth
+document.getElementById('loginScreen').style.display = 'none';
+document.getElementById('loadingScreen').style.display = 'flex';
 
-function renderAll() {
-  renderHeader();
-  renderTasks();
-  renderGrid();
-  loadNote();
-}
-
-renderAll();
+onAuthStateChanged(auth, (user) => {
+  document.getElementById('loadingScreen').style.display = 'none';
+  if (user) {
+    currentUser = user;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    document.getElementById('userName').textContent = user.displayName || user.email;
+    document.getElementById('userAvatar').src = user.photoURL || '';
+    setSyncing(true);
+    if (unsubscribeSnap) unsubscribeSnap();
+    unsubscribeSnap = onSnapshot(doc(db, 'users', user.uid), (snap) => {
+      userData = snap.exists() ? (snap.data().data || {}) : {};
+      setSyncing(false);
+      renderAll();
+    });
+  } else {
+    currentUser = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('appScreen').style.display = 'none';
+  }
+});
 </script>
 </body>
 </html>
