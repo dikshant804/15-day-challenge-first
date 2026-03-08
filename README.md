@@ -1,8 +1,7 @@
 🔥 15-Day Challenge Tracker
 A personal habit tracker for a 15-day challenge covering Course Completion, Daily Gym, and Productive Work. Built as a single HTML file — no frameworks, no backend, no installs.
 
-Live at: https://yourusername.github.io/15-day-challenge/
-(replace yourusername with your GitHub username)
+Live at: https://dikshant804.github.io/15-day-challenge-first/
 
 
 What It Does
@@ -30,22 +29,10 @@ Add a quick daily note (optional but recommended)
 Watch the 15-day grid fill up green
 
 
-Setup (GitHub Pages)
-
-Fork or clone this repo
-Make sure index.html is in the root
-Go to Settings → Pages
-Set source to main branch, / (root) folder
-Save — your URL will appear within 60 seconds
-
-
 Files
 /
 ├── index.html      # The entire app (HTML + CSS + JS)
 └── README.md       # This file
-
-Data & Privacy
-All data is saved in your browser's localStorage — nothing is sent to any server. Data is private to your device and browser. Clearing browser data will reset the tracker.
 
 Built With
 
